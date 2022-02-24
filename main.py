@@ -207,7 +207,7 @@ def videosmerge():
         print(final_pages)
         original_pdf.save(the_final_file, incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP,deflate=True)
 
-    shutil.move(rf'{thefirstfile}{14}',thefirstfile )
+        shutil.move(rf'{thefirstfile}{14}',thefirstfile )
 window = tk.Tk()
 window.geometry('500x700')
 
