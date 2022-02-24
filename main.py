@@ -1,24 +1,19 @@
-from tkinter import ttk
 import os
 from tkinter import *
-from tkinter.font import Font
 import os.path
 from tkinter import filedialog
 from tkinter.filedialog import askopenfilenames
 import tkinter as tk
-
-the_files = []
-import PyPDF2
 import re
 import fitz
 import sys
+from PyPDF2 import PdfFileReader
+import shutil
 
 if not sys.warnoptions:
     import warnings
     warnings.simplefilter("ignore")
-
-from PyPDF2 import PdfFileReader
-
+the_files = []
 
 def resource_path(relative_path):
     try:
@@ -27,7 +22,6 @@ def resource_path(relative_path):
         base_path = os.path.abspath('.')
     return os.path.join(base_path,relative_path)
 def select_exam():
-
 
     directory = askopenfilenames(initialdir="/",title="Select Exam")
     for files1 in directory:
@@ -39,15 +33,12 @@ def select_exam():
         the_files[-1] = the_files[0]
         print(f'{the_files}')
 
-
 def examname():
     global hotname
     hotname = name1.get()
     donelabel = tk.Label(window,text="Name of Exam File was set!",bg='#FFD53D')
     name1.delete(0,'end')
     donelabel.pack()
-
-
 
 def videosmerge():
     directorypath = filedialog.askdirectory()
@@ -79,6 +70,9 @@ def videosmerge():
     the_start_file = rf"{filepath}\{hotname}.pdf"
     the_final_file = rf"{filepath}\{hotname}.pdf"
     f = 0
+    global thefirstfile
+    thefirstfile = the_files[0]
+    shutil.copyfile(thefirstfile, rf'{thefirstfile}{14}')
     while f < 2:
         for i in image_y:
             final_y = i
@@ -99,8 +93,8 @@ def videosmerge():
 
         print(final_y)
 
-        words = [
-            "Permission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every reasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the publisher will be pleased to make amends at the earliest possible opportunity. To avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge International Examinations Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download at www.cie.org.uk after the live examination series. Cambridge International Examinations is part of the Cambridge Assessment Group. Cambridge Assessment is the brand name of University of Cambridge Local Examinations Syndicate (UCLES), which is itself a department of the University of Cambridge."]
+        words = [ "Permission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every reasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the publisher will be pleased to make amends at the earliest possible opportunity. To avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge International Examinations Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download at www.cie.org.uk after the live examination series. Cambridge International Examinations is part of the Cambridge Assessment Group. Cambridge Assessment is the brand name of University of Cambridge Local Examinations Syndicate (UCLES), which is itself a department of the University of Cambridge.","Permission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every reasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the publisher will be pleased to make amends at the earliest possible opportunity. To avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge Assessment International Education Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download at www.cambridgeinternational.org after the live examination series. Cambridge Assessment International Education is part of the Cambridge Assessment Group. Cambridge Assessment is the brand name of the University of Cambridge Local Examinations Syndicate (UCLES), which itself is a department of the University of Cambridge.","Permission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every reasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the publisher will be pleased to make amends at the earliest possible opportunity. To avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge Assessment International Education Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download at www.cambridgeinternational.org after the live examination series. Cambridge Assessment International Education is part of the Cambridge Assessment Group. Cambridge Assessment is the brand name of the University of Cambridge Local Examinations Syndicate (UCLES), which itself is a department of the University of Cambridge."]
+
         wordtanya = []
         wordblank = 'BLANK	PAGE'
         wordblank2 = 'BLANK PAGE'
@@ -199,8 +193,8 @@ def videosmerge():
     if final_pages == my_list and final_pages[0] == 1:
         final_pages.insert(0, 0)
         original_pdf.movePage(final_pages[-1], 0)
-        original_pdf.save(the_final_file, incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP)
-
+        original_pdf.save(the_final_file, incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP,deflate=True)
+        shutil.move(rf'{thefirstfile}{14}', thefirstfile)
     else:
 
         final_pages[-1] = final_pages[-1] + 1
@@ -211,8 +205,9 @@ def videosmerge():
         final_pages = list(range(final_pages[0], final_pages[-1]))
         original_pdf.movePage(final_pages[-1],0)
         print(final_pages)
-        original_pdf.save(the_final_file, incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP)
+        original_pdf.save(the_final_file, incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP,deflate=True)
 
+    shutil.move(rf'{thefirstfile}{14}',thefirstfile )
 window = tk.Tk()
 window.geometry('500x700')
 
@@ -243,11 +238,11 @@ radiobutton3.pack()
 radiobutton4.pack()
 print(var)
 
-
 merge_button = tk.Button(window,font="Helvetica 15 ",text="3.Create Exam",bg='#40B0DF',relief = "solid", width = 29,height = 3,command=lambda: videosmerge())
 
 merge_button.pack(pady=20)
 
-
 window.mainloop()
+
+
 
